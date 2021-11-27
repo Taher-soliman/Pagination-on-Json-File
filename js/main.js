@@ -1,10 +1,70 @@
 let paginationUl = document.querySelector(".pagination-bar ul");
 let postsHolder = document.querySelector(".posts-holder");
-
-let totalPages = 25;
-let currentCards = 5;
-let currentPage = currentCards;
+let currentPage = 1;
 let cards = 4;
+
+const xhr = new XMLHttpRequest();
+xhr.open("GET", "posts.json");
+xhr.onload = accessData;
+let posts;
+
+function accessData() {
+  // Get Data From API And Display In Page
+  posts = JSON.parse(this.responseText);
+  displayPosts(posts, postsHolder, cards, currentPage);
+  let totalPages = 25;
+
+  getPages(totalPages, currentPage);
+
+  function displayPosts(posts, holder, cardsPrePage, page) {
+    holder.innerHTML = "";
+    page--;
+    let start = cardsPrePage * page;
+    let end = start + cardsPrePage;
+    let paginatedCards = posts.slice(start, end);
+
+    for (i = 0; i < paginatedCards.length; i++) {
+      let post = paginatedCards[i];
+      holder.innerHTML += `<div class="card-holder col-3">
+      <div class="post-card ">
+      <p class="title"> ${post.title}</p>
+      <span class="id">CardNumber : ${post.id}</span>
+      <p class="post"> ${post.body}</p>
+    </div>
+      </div>`;
+    }
+  }
+
+  paginationUl.addEventListener("click", moveByNumb);
+
+  function moveByNumb(e) {
+    let clas = e.target.className;
+    if (typeof +e.target.innerText === "number") {
+      currentPage = +e.target.innerText;
+
+      displayPosts(posts, postsHolder, cards, currentPage);
+    }
+    if (clas.includes("next")) {
+      for (i = 0; i < paginationUl.childNodes.length; i++) {
+        let ele = paginationUl.childNodes[i];
+        if (ele.className.includes("active")) {
+          currentPage = +ele.innerText;
+        }
+      }
+      displayPosts(posts, postsHolder, cards, currentPage);
+    }
+    if (clas.includes("prev")) {
+      for (i = 0; i < paginationUl.childNodes.length; i++) {
+        let ele = paginationUl.childNodes[i];
+        if (ele.className.includes("active")) {
+          currentPage = +ele.innerText;
+        }
+      }
+      displayPosts(posts, postsHolder, cards, currentPage);
+    }
+  }
+}
+xhr.send();
 
 function getPages(totalPages, page) {
   paginationUl.innerHTML = "";
@@ -20,7 +80,7 @@ function getPages(totalPages, page) {
   if (page > 1) {
     prevBtn += `<li class="btn prev" onclick="getPages(totalPages, ${
       page - 1
-    })"><span>Prev</span></li>`;
+    })">Prev</li>`;
   }
   if (page > 2) {
     firstPage += `<li class="numb"onclick="getPages(totalPages, 1)" ><span>1</span></li>`;
@@ -61,9 +121,9 @@ function getPages(totalPages, page) {
     lastPage += `<li class="numb" onclick="getPages(totalPages, ${totalPages})"><span>${totalPages}</span></li>`;
   }
   if (page < totalPages) {
-    nextBtn += `<li class="btn next" onclick="getPages(totalPages, ${
+    nextBtn += `<li class="btn next"  onclick="getPages(totalPages, ${
       page + 1
-    })"><span>Next</span></li>`;
+    })">Next</li>`;
   }
 
   paginationUl.innerHTML += prevBtn;
@@ -72,58 +132,3 @@ function getPages(totalPages, page) {
   paginationUl.innerHTML += lastPage;
   paginationUl.innerHTML += nextBtn;
 }
-const xhr = new XMLHttpRequest();
-xhr.open("GET", "posts.json");
-xhr.onload = accessData;
-let posts;
-
-function accessData() {
-  //
-  //
-  //
-
-  posts = JSON.parse(this.responseText);
-
-  getPages(totalPages, currentCards);
-
-  function displayPosts(posts, holder, cardsPrePage, page) {
-    holder.innerHTML = "";
-    page--;
-    let start = cardsPrePage * page;
-    let end = start + cardsPrePage;
-    let paginatedCards = posts.slice(start, end);
-
-    for (i = 0; i < paginatedCards.length; i++) {
-      let post = paginatedCards[i];
-      holder.innerHTML += `<div class="card-holder col-3">
-      <div class="post-card ">
-      <p class="title"> ${post.title}</p>
-      <span class="id">CardNumber : ${post.id}</span>
-      <p class="post"> ${post.body}</p>
-    </div>
-      </div>`;
-    }
-  }
-  displayPosts(posts, postsHolder, cards, currentCards);
-
-  //
-  //
-  //
-  function moveByNumb(e) {
-    if (typeof +e.target.innerText === "number") {
-      currentCards = +e.target.innerText;
-      currentPage = currentCards;
-      displayPosts(posts, postsHolder, cards, currentPage);
-    }
-  }
-  function getNext(current) {
-    console.log("string");
-    current = currentCards;
-    let next = currentCards + 1;
-    console.log(currentCards);
-    displayPosts(posts, postsHolder, cards, next);
-    console.log(next);
-  }
-  paginationUl.addEventListener("click", moveByNumb);
-}
-xhr.send();
