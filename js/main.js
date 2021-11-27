@@ -12,8 +12,8 @@ function accessData() {
   // Get Data From API And Display In Page
   posts = JSON.parse(this.responseText);
   displayPosts(posts, postsHolder, cards, currentPage);
-  let totalPages = 25;
-
+  let totalPages = posts.length / cards;
+  localStorage.setItem("PageCount", totalPages);
   getPages(totalPages, currentPage);
 
   function displayPosts(posts, holder, cardsPrePage, page) {
@@ -38,6 +38,7 @@ function accessData() {
   paginationUl.addEventListener("click", moveByNumb);
 
   function moveByNumb(e) {
+    let element = e.target;
     let clas = e.target.className;
     if (typeof +e.target.innerText === "number") {
       currentPage = +e.target.innerText;
@@ -54,6 +55,7 @@ function accessData() {
       displayPosts(posts, postsHolder, cards, currentPage);
     }
     if (clas.includes("prev")) {
+      element.onclick = getPages(totalPages, page - 1);
       for (i = 0; i < paginationUl.childNodes.length; i++) {
         let ele = paginationUl.childNodes[i];
         if (ele.className.includes("active")) {
@@ -66,6 +68,7 @@ function accessData() {
 }
 xhr.send();
 
+totalPages = localStorage.getItem("PageCount");
 function getPages(totalPages, page) {
   paginationUl.innerHTML = "";
   let prevBtn = "";
@@ -78,9 +81,7 @@ function getPages(totalPages, page) {
   let firstPage = "";
   let lastPage = "";
   if (page > 1) {
-    prevBtn += `<li class="btn prev" onclick="getPages(totalPages, ${
-      page - 1
-    })">Prev</li>`;
+    prevBtn += `<li class="btn prev" onclick="">Prev</li>`;
   }
   if (page > 2) {
     firstPage += `<li class="numb"onclick="getPages(totalPages, 1)" ><span>1</span></li>`;
