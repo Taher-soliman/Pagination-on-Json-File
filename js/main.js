@@ -81,7 +81,9 @@ function getPages(totalPages, page) {
   let firstPage = "";
   let lastPage = "";
   if (page > 1) {
-    prevBtn += `<li class="btn prev" onclick="">Prev</li>`;
+    prevBtn += `<li class="btn prev" onclick="getPages(totalPages, ${
+      page - 1
+    })">>Prev</li>`;
   }
   if (page > 2) {
     firstPage += `<li class="numb"onclick="getPages(totalPages, 1)" ><span>1</span></li>`;
