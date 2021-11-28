@@ -55,7 +55,7 @@ function accessData() {
       displayPosts(posts, postsHolder, cards, currentPage);
     }
     if (clas.includes("prev")) {
-      element.onclick = getPages(totalPages, page - 1);
+      
       for (i = 0; i < paginationUl.childNodes.length; i++) {
         let ele = paginationUl.childNodes[i];
         if (ele.className.includes("active")) {
