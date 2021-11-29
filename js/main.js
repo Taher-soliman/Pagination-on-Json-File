@@ -1,7 +1,7 @@
 let paginationUl = document.querySelector(".pagination-bar ul");
 let postsHolder = document.querySelector(".posts-holder");
 let currentPage = 1;
-let cards = 4;
+let cards = 5;
 
 const xhr = new XMLHttpRequest();
 xhr.open("GET", "posts.json");
@@ -25,7 +25,7 @@ function accessData() {
 
     for (i = 0; i < paginatedCards.length; i++) {
       let post = paginatedCards[i];
-      holder.innerHTML += `<div class="card-holder col-3">
+      holder.innerHTML += `<div class="card-holder col">
       <div class="post-card ">
       <p class="title"> ${post.title}</p>
       <span class="id">CardNumber : ${post.id}</span>
@@ -38,7 +38,6 @@ function accessData() {
   paginationUl.addEventListener("click", moveByNumb);
 
   function moveByNumb(e) {
-    let element = e.target;
     let clas = e.target.className;
     if (typeof +e.target.innerText === "number") {
       currentPage = +e.target.innerText;
@@ -55,7 +54,6 @@ function accessData() {
       displayPosts(posts, postsHolder, cards, currentPage);
     }
     if (clas.includes("prev")) {
-      
       for (i = 0; i < paginationUl.childNodes.length; i++) {
         let ele = paginationUl.childNodes[i];
         if (ele.className.includes("active")) {
